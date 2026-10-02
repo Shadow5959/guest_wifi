@@ -2,7 +2,7 @@
 <html class="staticrypt-html">
     <head>
         <meta charset="utf-8" />
-        <title>Protected Page</title>
+        <title>Guest Wi-Fi</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <!-- do not cache this page -->
@@ -171,6 +171,33 @@
                     font-size: 16px;
                 }
             }
+        
+            html, body { margin: 0; }
+            body.staticrypt-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+            .staticrypt-page { width: 100%; max-width: 360px; padding: 8% 16px 0; }
+            .staticrypt-form { padding: 32px 20px 28px; border-radius: 14px; }
+            .staticrypt-title { font-size: 22px; font-weight: 600; margin: 0 0 6px; }
+            .pin-sub { margin: 0; color: #666; font-size: 14px; }
+            .pin { position: relative; margin: 0 0 14px; }
+            .pin input#staticrypt-password {
+                position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; margin: 0;
+                opacity: 0; font-size: 16px; /* 16px stops iOS zooming */ z-index: 2; cursor: text;
+            }
+            .pin-boxes { display: flex; gap: 8px; justify-content: center; }
+            .pin-boxes span {
+                flex: 1; max-width: 46px; height: 56px; display: flex; align-items: center; justify-content: center;
+                background: #f2f2f2; border: 2px solid transparent; border-radius: 10px;
+                font-size: 26px; font-weight: 600; color: #222; transition: border-color .15s, background .15s;
+            }
+            .pin-boxes span.active { border-color: #4CAF50; background: #fff; }
+            .pin.shake { animation: pin-shake .35s; }
+            .pin.error .pin-boxes span { border-color: #d93025; }
+            @keyframes pin-shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+            .pin-error { min-height: 18px; margin: 0 0 8px; color: #d93025; font-size: 13px; }
+            .pin-show { background: none; border: 0; color: #4CAF50; font-size: 13px; cursor: pointer; margin: 0 0 12px; padding: 4px 8px; }
+            .staticrypt-remember { font-size: 13px; color: #666; display: block; margin-bottom: 14px; }
+            .staticrypt-form .staticrypt-decrypt-button { border-radius: 10px; padding: 16px; font-size: 15px; }
+            .staticrypt-form .staticrypt-decrypt-button:disabled { opacity: .6; }
         </style>
     </head>
 
@@ -183,36 +210,37 @@
             <div class="staticrypt-page">
                 <div class="staticrypt-form">
                     <div class="staticrypt-instructions">
-                        <p class="staticrypt-title">Protected Page</p>
-                        <p></p>
+                        <p class="staticrypt-title">Guest Wi-Fi</p>
+                        <p class="pin-sub">Enter the 6-digit PIN</p>
                     </div>
 
                     <hr class="staticrypt-hr" />
 
-                    <form id="staticrypt-form" action="#" method="post">
-                        <div class="staticrypt-password-container">
+                    <form id="staticrypt-form" action="#" method="post" autocomplete="off">
+                        <div class="pin" id="pin">
                             <input
                                 id="staticrypt-password"
                                 type="password"
                                 name="password"
-                                placeholder="Password"
+                                inputmode="numeric"
+                                pattern="[0-9]*"
+                                autocomplete="one-time-code"
+                                aria-label="6-digit PIN"
                                 autofocus
                             />
-
-                            <img
-                                class="staticrypt-toggle-password-visibility"
-                                alt="template_toggle_show"
-                                title="template_toggle_show"
-                                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
-                            />
+                            <div class="pin-boxes" aria-hidden="true">
+                                <span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
                         </div>
+                        <p class="pin-error" id="pin-error" role="alert"></p>
+                        <button type="button" class="pin-show" id="pin-show">Show PIN</button>
 
                         <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
                             <input id="staticrypt-remember" type="checkbox" name="remember" />
-                            Remember me
+                            Remember me on this phone
                         </label>
 
-                        <input type="submit" class="staticrypt-decrypt-button" value="DECRYPT" />
+                        <input type="submit" class="staticrypt-decrypt-button" value="UNLOCK" />
                     </form>
                 </div>
             </div>
@@ -828,7 +856,49 @@ exports.init = init;
             const templateConfig = {
                 rememberExpirationKey: "staticrypt_expiration",
                 rememberPassphraseKey: "staticrypt_passphrase",
-                replaceHtmlCallback: null,
+                replaceHtmlCallback: function (html) {
+                    document.write(html);
+                    document.close();
+                    let tries = 0;
+                    (function addCopy() {
+                        if (!document.body && tries++ < 20) return setTimeout(addCopy, 50);
+                        try {
+                            let target = null, pw = "";
+                            const els = document.body.querySelectorAll("p, li, div, td, tr, span, h1, h2, h3, h4");
+                            for (const el of els) {
+                                const m = el.textContent.trim().match(/^pass(?:word|phrase)?\s*[:\-]\s*(.+)$/i);
+                                if (m) {
+                                    const b = el.querySelector("b, strong, code");
+                                    pw = (b ? b.textContent : m[1]).trim();
+                                    target = el;
+                                    break;
+                                }
+                            }
+                            if (!target || !pw) return;
+                            const btn = document.createElement("button");
+                            btn.type = "button";
+                            btn.textContent = "Copy password";
+                            btn.style.cssText = "display:block;width:100%;max-width:320px;margin:20px auto 8px;padding:16px;font-size:16px;font-weight:600;color:#fff;background:#4CAF50;border:0;border-radius:10px;cursor:pointer";
+                            const hint = document.createElement("p");
+                            hint.textContent = "Then open Settings \u2192 Wi-Fi, pick the network and paste.";
+                            hint.style.cssText = "font-size:13px;color:#666;margin:0";
+                            btn.addEventListener("click", async function () {
+                                let ok = false;
+                                try { await navigator.clipboard.writeText(pw); ok = true; } catch (e) {
+                                    const t = document.createElement("textarea");
+                                    t.value = pw; t.style.cssText = "position:fixed;opacity:0";
+                                    document.body.appendChild(t); t.select();
+                                    try { ok = document.execCommand("copy"); } catch (e2) {}
+                                    t.remove();
+                                }
+                                btn.textContent = ok ? "Copied \u2713" : "Copy failed - select the password above";
+                                setTimeout(() => (btn.textContent = "Copy password"), 2500);
+                            });
+                            target.insertAdjacentElement("afterend", hint);
+                            target.insertAdjacentElement("afterend", btn);
+                        } catch (e) {}
+                    })();
+                },
                 clearLocalStorageCallback: null,
             };
 
@@ -854,41 +924,66 @@ exports.init = init;
                 }
             };
 
-            // toggle password visibility
-            const toggleIcon = document.querySelector(".staticrypt-toggle-password-visibility");
-            // these two icons are coming from FontAwesome
-            const imgSrcEyeClosed =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg==";
-            const imgSrcEyeOpened =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTI4OCAzMmMtODAuOCAwLTE0NS41IDM2LjgtMTkyLjYgODAuNkM0OC42IDE1NiAxNy4zIDIwOCAyLjUgMjQzLjdjLTMuMyA3LjktMy4zIDE2LjcgMCAyNC42QzE3LjMgMzA0IDQ4LjYgMzU2IDk1LjQgMzk5LjRDMTQyLjUgNDQzLjIgMjA3LjIgNDgwIDI4OCA0ODBzMTQ1LjUtMzYuOCAxOTIuNi04MC42YzQ2LjgtNDMuNSA3OC4xLTk1LjQgOTMtMTMxLjFjMy4zLTcuOSAzLjMtMTYuNyAwLTI0LjZjLTE0LjktMzUuNy00Ni4yLTg3LjctOTMtMTMxLjFDNDMzLjUgNjguOCAzNjguOCAzMiAyODggMzJ6TTE0NCAyNTZhMTQ0IDE0NCAwIDEgMSAyODggMCAxNDQgMTQ0IDAgMSAxIC0yODggMHptMTQ0LTY0YzAgMzUuMy0yOC43IDY0LTY0IDY0Yy03LjEgMC0xMy45LTEuMi0yMC4zLTMuM2MtNS41LTEuOC0xMS45IDEuNi0xMS43IDcuNGMuMyA2LjkgMS4zIDEzLjggMy4yIDIwLjdjMTMuNyA1MS4yIDY2LjQgODEuNiAxMTcuNiA2Ny45czgxLjYtNjYuNCA2Ny45LTExNy42Yy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM3oiLz48L3N2Zz4=";
-            toggleIcon.addEventListener("click", function () {
-                const passwordInput = document.getElementById("staticrypt-password");
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    toggleIcon.src = imgSrcEyeOpened;
-                    toggleIcon.alt = templateToggleAltHide;
-                    toggleIcon.title = templateToggleAltHide;
-                } else {
-                    passwordInput.type = "password";
-                    toggleIcon.src = imgSrcEyeClosed;
-                    toggleIcon.alt = templateToggleAltShow;
-                    toggleIcon.title = templateToggleAltShow;
-                }
+            // PIN input behaviour
+            const pinInput = document.getElementById("staticrypt-password");
+            const pinWrap = document.getElementById("pin");
+            const pinBoxes = pinWrap.querySelectorAll(".pin-boxes span");
+            const pinError = document.getElementById("pin-error");
+            const showBtn = document.getElementById("pin-show");
+            const form = document.getElementById("staticrypt-form");
+            const submitBtn = form.querySelector(".staticrypt-decrypt-button");
+            let showDigits = false, busy = false;
+
+            function renderPin() {
+                const v = pinInput.value;
+                pinBoxes.forEach((box, i) => {
+                    box.textContent = i < v.length ? (showDigits ? v[i] : "\u2022") : "";
+                    box.classList.toggle("active", document.activeElement === pinInput && i === Math.min(v.length, 5));
+                });
+            }
+            pinInput.addEventListener("input", function () {
+                pinInput.value = pinInput.value.replace(/\D/g, "").slice(0, 6);
+                pinWrap.classList.remove("error");
+                pinError.textContent = "";
+                renderPin();
+                if (pinInput.value.length === 6) form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event("submit", { cancelable: true }));
+            });
+            pinInput.addEventListener("focus", renderPin);
+            pinInput.addEventListener("blur", renderPin);
+            showBtn.addEventListener("click", function () {
+                showDigits = !showDigits;
+                showBtn.textContent = showDigits ? "Hide PIN" : "Show PIN";
+                renderPin();
+                pinInput.focus();
             });
 
-            // handle password form submission
-            document.getElementById("staticrypt-form").addEventListener("submit", async function (e) {
+            // handle form submission
+            form.addEventListener("submit", async function (e) {
                 e.preventDefault();
-
-                const password = document.getElementById("staticrypt-password").value,
-                    isRememberChecked = document.getElementById("staticrypt-remember").checked;
-
+                const password = pinInput.value;
+                if (busy) return;
+                if (password.length !== 6) {
+                    pinError.textContent = "Enter all 6 digits";
+                    return;
+                }
+                busy = true;
+                submitBtn.disabled = true;
+                submitBtn.value = "CHECKING...";
+                const isRememberChecked = document.getElementById("staticrypt-remember").checked;
                 const { isSuccessful } = await staticrypt.handleDecryptionOfPage(password, isRememberChecked);
-
                 if (!isSuccessful) {
-                    alert(templateError);
+                    busy = false;
+                    submitBtn.disabled = false;
+                    submitBtn.value = "UNLOCK";
+                    pinError.textContent = "Wrong PIN, try again";
+                    pinWrap.classList.add("error", "shake");
+                    setTimeout(() => pinWrap.classList.remove("shake"), 400);
+                    pinInput.value = "";
+                    renderPin();
+                    pinInput.focus();
                 }
             });
-        </script>
+            renderPin();
+                </script>
     </body>
 </html>
